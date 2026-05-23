@@ -1,0 +1,94 @@
+services:
+  # ========================
+  # Infrastructure
+  # ========================
+  mongo:
+    image: mongo:7
+    container_name: restaurant-mongo
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - restaurant-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: restaurant-rabbitmq
+    ports:
+      - '5672:5672'   # AMQP
+      - '15672:15672' # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - restaurant-network
+
+  # ========================
+  # Microservices
+  # ========================
+  auth-service:
+    build:
+      context: .
+      dockerfile: services/auth/Dockerfile
+    container_name: auth-service
+    ports:
+      - '3001:3001'
+    environment:
+      PORT: 3001
+      MONGO_URI: mongodb://mongo:27017/auth_db
+      JWT_SECRET: restaurant_super_secret_jwt_key_2024
+      JWT_EXPIRES_IN: 24h
+    depends_on:
+      - mongo
+    networks:
+      - restaurant-network
+    restart: unless-stopped
+
+  menu-service:
+    build:
+      context: .
+      dockerfile: services/menu/Dockerfile
+    container_name: menu-service
+    ports:
+      - '3002:3002'
+    environment:
+      PORT: 3002
+      MONGO_URI: mongodb://mongo:27017/menu_db
+      JWT_SECRET: restaurant_super_secret_jwt_key_2024
+      RABBITMQ_URL: amqp://rabbitmq:5672
+    depends_on:
+      - mongo
+      - rabbitmq
+    networks:
+      - restaurant-network
+    restart: unless-stopped
+
+  cuisine-service:
+    build:
+      context: .
+      dockerfile: services/cuisine/Dockerfile
+    container_name: cuisine-service
+    ports:
+      - '3003:3003'
+    environment:
+      PORT: 3003
+      MONGO_URI: mongodb://mongo:27017/cuisine_db
+      JWT_SECRET: restaurant_super_secret_jwt_key_2024
+      RABBITMQ_URL: amqp://rabbitmq:5672
+    depends_on:
+      - mongo
+      - rabbitmq
+    networks:
+      - restaurant-network
+    restart: unless-stopped
+
+volumes:
+  mongo_data:
+  rabbitmq_data:
+
+networks:
+  restaurant-network:
+    driver: bridge

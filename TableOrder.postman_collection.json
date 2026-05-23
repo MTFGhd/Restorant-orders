@@ -1,0 +1,614 @@
+{
+  "info": {
+    "name": "TableOrder - Restaurant Microservices",
+    "description": "Collection complète des API pour l'application TableOrder (Microservices: Auth, Menu, Cuisine).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "c1234567-89ab-cdef-0123-456789abcdef"
+  },
+  "item": [
+    {
+      "name": "Auth Service (Port 3001)",
+      "item": [
+        {
+          "name": "Inscription (Serveur)",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Jean Serveur\",\n  \"email\": \"serveur@resto.com\",\n  \"motDePasse\": \"password123\",\n  \"role\": \"serveur\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/auth/inscription",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "api",
+                "auth",
+                "inscription"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Inscription (Gérant)",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Chef Martin\",\n  \"email\": \"gerant@resto.com\",\n  \"motDePasse\": \"password123\",\n  \"role\": \"gerant\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/auth/inscription",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "api",
+                "auth",
+                "inscription"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Inscription (Cuisinier)",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Pierre Cuisinier\",\n  \"email\": \"cuisinier@resto.com\",\n  \"motDePasse\": \"password123\",\n  \"role\": \"cuisinier\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/auth/inscription",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "api",
+                "auth",
+                "inscription"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Connexion",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if(jsonData.donnees && jsonData.donnees.jeton) {",
+                  "    pm.environment.set(\"jwt_token\", jsonData.donnees.jeton);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"gerant@resto.com\",\n  \"motDePasse\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/auth/connexion",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "api",
+                "auth",
+                "connexion"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Profil Utilisateur",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3001/api/auth/profil",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "api",
+                "auth",
+                "profil"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Menu Service (Port 3002)",
+      "item": [
+        {
+          "name": "Catégories",
+          "item": [
+            {
+              "name": "Obtenir toutes les catégories",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "http://localhost:3002/api/categories",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3002",
+                  "path": [
+                    "api",
+                    "categories"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Créer une catégorie",
+              "request": {
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nom\": \"Entrées\",\n  \"description\": \"Nos entrées fraîches\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:3002/api/categories",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3002",
+                  "path": [
+                    "api",
+                    "categories"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Modifier une catégorie",
+              "request": {
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nom\": \"Entrées Chaudes\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:3002/api/categories/:id",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3002",
+                  "path": [
+                    "api",
+                    "categories",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "remplacer_par_id"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Supprimer une catégorie",
+              "request": {
+                "method": "DELETE",
+                "url": {
+                  "raw": "http://localhost:3002/api/categories/:id",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3002",
+                  "path": [
+                    "api",
+                    "categories",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "remplacer_par_id"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Plats (Menu)",
+          "item": [
+            {
+              "name": "Obtenir le menu complet",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "http://localhost:3002/api/menu",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3002",
+                  "path": [
+                    "api",
+                    "menu"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Créer un plat",
+              "request": {
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nom\": \"Salade César\",\n  \"description\": \"Salade avec parmesan et croûtons\",\n  \"prix\": 12.50,\n  \"categorie\": \"id_de_la_categorie_ici\",\n  \"disponible\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:3002/api/menu",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3002",
+                  "path": [
+                    "api",
+                    "menu"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Modifier un plat",
+              "request": {
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"prix\": 13.50\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:3002/api/menu/:id",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3002",
+                  "path": [
+                    "api",
+                    "menu",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "remplacer_par_id"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Supprimer un plat",
+              "request": {
+                "method": "DELETE",
+                "url": {
+                  "raw": "http://localhost:3002/api/menu/:id",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3002",
+                  "path": [
+                    "api",
+                    "menu",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "remplacer_par_id"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Commandes (Serveur)",
+          "item": [
+            {
+              "name": "Créer une commande",
+              "request": {
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"numeroTable\": 5,\n  \"articles\": [\n    {\n      \"platId\": \"id_du_plat_ici\",\n      \"quantite\": 2,\n      \"notes\": \"Sans croûtons SVP\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:3002/api/commandes",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3002",
+                  "path": [
+                    "api",
+                    "commandes"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Lister les commandes (Salle)",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "http://localhost:3002/api/commandes",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3002",
+                  "path": [
+                    "api",
+                    "commandes"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Obtenir l'addition d'une commande",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "http://localhost:3002/api/commandes/:id/addition",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3002",
+                  "path": [
+                    "api",
+                    "commandes",
+                    ":id",
+                    "addition"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "remplacer_par_id_commande"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Mettre à jour le statut (Salle)",
+              "request": {
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"statut\": \"servie\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:3002/api/commandes/:id/statut",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "3002",
+                  "path": [
+                    "api",
+                    "commandes",
+                    ":id",
+                    "statut"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "remplacer_par_id_commande"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Cuisine Service (Port 3003)",
+      "item": [
+        {
+          "name": "Lister les commandes (Cuisine)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3003/api/cuisine/commandes",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3003",
+              "path": [
+                "api",
+                "cuisine",
+                "commandes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Statistiques de la Cuisine",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3003/api/cuisine/statistiques",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3003",
+              "path": [
+                "api",
+                "cuisine",
+                "statistiques"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Marquer un plat comme prêt",
+          "request": {
+            "method": "PATCH",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"statut\": \"pret\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3003/api/cuisine/commandes/:id/articles/:articleId",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3003",
+              "path": [
+                "api",
+                "cuisine",
+                "commandes",
+                ":id",
+                "articles",
+                ":articleId"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "id_commande_ici"
+                },
+                {
+                  "key": "articleId",
+                  "value": "id_article_ici"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Mettre à jour le statut global d'une commande",
+          "request": {
+            "method": "PATCH",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"statut\": \"pret\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3003/api/cuisine/commandes/:id/statut",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3003",
+              "path": [
+                "api",
+                "cuisine",
+                "commandes",
+                ":id",
+                "statut"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "id_commande_ici"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
