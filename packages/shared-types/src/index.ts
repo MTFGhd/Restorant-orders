@@ -12,7 +12,7 @@ export interface IUtilisateur {
   _id?: string;
   nom: string;
   email: string;
-  motDePasse: string;
+  password: string;
   role: UserRole;
   createdAt?: Date;
   updatedAt?: Date;
@@ -69,18 +69,18 @@ export enum StatutCommande {
   SERVIE = 'servie',
 }
 
-export enum StatutArticle {
+export enum StatutLigneCommande {
   EN_ATTENTE = 'en_attente',
   EN_PREPARATION = 'en_preparation',
   PRET = 'pret',
 }
 
-export interface IArticleCommande {
+export interface ILigneCommande {
   platId: string;
   nom: string;
   prix: number;
   quantite: number;
-  statut: StatutArticle;
+  statut: StatutLigneCommande;
   notes?: string;
 }
 
@@ -89,7 +89,7 @@ export interface ICommande {
   numeroTable: number;
   serveurId: string;
   serveurNom: string;
-  articles: IArticleCommande[];
+  lignes: ILigneCommande[];
   statut: StatutCommande;
   total: number;
   createdAt?: Date;
@@ -105,7 +105,7 @@ export interface MessageCommande {
   numeroTable: number;
   serveurId: string;
   serveurNom: string;
-  articles: IArticleCommande[];
+  lignes: ILigneCommande[];
   total: number;
   creeA: string;
 }
@@ -125,6 +125,6 @@ export type ApiResponse<T = unknown> = ReponseApi<T>;
 export type AuthResponse = ReponseAuth;
 export type OrderStatus = StatutCommande;
 export const OrderStatus = StatutCommande;
-export type OrderItemStatus = StatutArticle;
-export const OrderItemStatus = StatutArticle;
+export type OrderItemStatus = StatutLigneCommande;
+export const OrderItemStatus = StatutLigneCommande;
 export type OrderMessage = MessageCommande;

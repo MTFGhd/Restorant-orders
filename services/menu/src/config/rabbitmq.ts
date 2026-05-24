@@ -9,7 +9,7 @@ const NOM_FILE = 'cuisine_orders';
  * Connexion à RabbitMQ avec réessai
  */
 export const connecterRabbitMQ = async (): Promise<void> => {
-  const url = process.env.RABBITMQ_URL || 'amqp://localhost:5672';
+  const url = process.env.RABBITMQ_URL || 'amqp://rabbitmq:5672';
   const maxTentatives = 10;
   let tentatives = 0;
 

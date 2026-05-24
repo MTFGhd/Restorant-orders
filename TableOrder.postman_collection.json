@@ -386,7 +386,7 @@
                 "method": "POST",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"numeroTable\": 5,\n  \"articles\": [\n    {\n      \"platId\": \"id_du_plat_ici\",\n      \"quantite\": 2,\n      \"notes\": \"Sans croûtons SVP\"\n    }\n  ]\n}",
+                  "raw": "{\n  \"numeroTable\": 5,\n  \"lignes\": [\n    {\n      \"platId\": \"id_du_plat_ici\",\n      \"quantite\": 2,\n      \"notes\": \"Sans croûtons SVP\"\n    }\n  ]\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -545,7 +545,7 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3003/api/cuisine/commandes/:id/articles/:articleId",
+              "raw": "http://localhost:3003/api/cuisine/commandes/:id/lignes/:ligneId",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -556,8 +556,8 @@
                 "cuisine",
                 "commandes",
                 ":id",
-                "articles",
-                ":articleId"
+                "lignes",
+                ":ligneId"
               ],
               "variable": [
                 {
@@ -565,8 +565,8 @@
                   "value": "id_commande_ici"
                 },
                 {
-                  "key": "articleId",
-                  "value": "id_article_ici"
+                  "key": "ligneId",
+                  "value": "id_ligne_ici"
                 }
               ]
             }

@@ -1,12 +1,12 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { StatutCommande, StatutArticle } from 'shared-types';
+import { StatutCommande, StatutLigneCommande } from 'shared-types';
 
-export interface IArticleCuisineDoc {
+export interface ILigneCuisineDoc {
   platId: string;
   nom: string;
   prix: number;
   quantite: number;
-  statut: StatutArticle;
+  statut: StatutLigneCommande;
   notes?: string;
 }
 
@@ -15,19 +15,19 @@ export interface ICommandeCuisineDocument extends Document {
   numeroTable: number;
   serveurId: string;
   serveurNom: string;
-  articles: IArticleCuisineDoc[];
+  lignes: ILigneCuisineDoc[];
   statut: StatutCommande;
   total: number;
   commandeRecueA: Date;
 }
 
-const schemaArticleCuisine = new Schema<IArticleCuisineDoc>(
+const schemaLigneCuisine = new Schema<ILigneCuisineDoc>(
   {
     platId: { type: String, required: true },
     nom: { type: String, required: true },
     prix: { type: Number, required: true },
     quantite: { type: Number, required: true, min: 1 },
-    statut: { type: String, enum: Object.values(StatutArticle), default: StatutArticle.EN_ATTENTE },
+    statut: { type: String, enum: Object.values(StatutLigneCommande), default: StatutLigneCommande.EN_ATTENTE },
     notes: { type: String },
   },
   { _id: true }
@@ -39,7 +39,7 @@ const schemaCommandeCuisine = new Schema<ICommandeCuisineDocument>(
     numeroTable: { type: Number, required: true },
     serveurId: { type: String, required: true },
     serveurNom: { type: String, required: true },
-    articles: { type: [schemaArticleCuisine], required: true },
+    lignes: { type: [schemaLigneCuisine], required: true },
     statut: { type: String, enum: Object.values(StatutCommande), default: StatutCommande.EN_ATTENTE },
     total: { type: Number, required: true },
     commandeRecueA: { type: Date, default: Date.now },

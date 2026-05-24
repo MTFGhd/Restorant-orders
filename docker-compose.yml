@@ -3,7 +3,7 @@ services:
   # Infrastructure
   # ========================
   mongo:
-    image: mongo:7
+    image: mongodb/mongodb-community-server:7.0-ubi9-slim
     container_name: restaurant-mongo
     ports:
       - '27017:27017'
@@ -29,13 +29,33 @@ services:
   # ========================
   # Microservices
   # ========================
+  api-gateway:
+    build:
+      context: .
+      dockerfile: services/Gateway/Dockerfile
+    container_name: api-gateway
+    ports:
+      - '8000:8000'
+    environment:
+      PORT: 8000
+      JWT_SECRET: restaurant_super_secret_jwt_key_2024
+      CORS_ORIGINS: http://localhost
+      AUTH_SERVICE_URL: http://auth-service:3001
+      MENU_SERVICE_URL: http://menu-service:3002
+      CUISINE_SERVICE_URL: http://cuisine-service:3003
+    depends_on:
+      - auth-service
+      - menu-service
+      - cuisine-service
+    networks:
+      - restaurant-network
+    restart: unless-stopped
+
   auth-service:
     build:
       context: .
       dockerfile: services/auth/Dockerfile
     container_name: auth-service
-    ports:
-      - '3001:3001'
     environment:
       PORT: 3001
       MONGO_URI: mongodb://mongo:27017/auth_db
@@ -52,8 +72,6 @@ services:
       context: .
       dockerfile: services/menu/Dockerfile
     container_name: menu-service
-    ports:
-      - '3002:3002'
     environment:
       PORT: 3002
       MONGO_URI: mongodb://mongo:27017/menu_db
@@ -71,8 +89,6 @@ services:
       context: .
       dockerfile: services/cuisine/Dockerfile
     container_name: cuisine-service
-    ports:
-      - '3003:3003'
     environment:
       PORT: 3003
       MONGO_URI: mongodb://mongo:27017/cuisine_db

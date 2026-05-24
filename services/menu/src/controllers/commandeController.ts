@@ -2,18 +2,18 @@ import { Request, Response } from 'express';
 import Commande from '../models/Order';
 import Plat from '../models/Dish';
 import { publierDansFile } from '../config/rabbitmq';
-import { ReponseApi, MessageCommande, StatutCommande, StatutArticle } from 'shared-types';
+import { ReponseApi, MessageCommande, StatutCommande, StatutLigneCommande } from 'shared-types';
 
 /**
  * POST /api/commandes
  * Créer une commande pour une table (serveur/gérant)
- * Corps: { numeroTable, articles: [{ platId, quantite, notes? }] }
+ * Corps: { numeroTable, lignes: [{ platId, quantite, notes? }] }
  */
 export const creerCommande = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { numeroTable, articles } = req.body;
+    const { numeroTable, lignes } = req.body;
 
-    if (!numeroTable || !articles || !Array.isArray(articles) || articles.length === 0) {
+    if (!numeroTable || !lignes || !Array.isArray(lignes) || lignes.length === 0) {
       res.status(400).json({
         succes: false,
         message: 'Numéro de table et au moins un plat sont requis.',
@@ -22,15 +22,15 @@ export const creerCommande = async (req: Request, res: Response): Promise<void> 
     }
 
     // Récupérer les détails des plats et vérifier la disponibilité
-    const articlesCommande = [];
+    const lignesCommande = [];
     let total = 0;
 
-    for (const article of articles) {
-      const plat = await Plat.findById(article.platId);
+    for (const ligne of lignes) {
+      const plat = await Plat.findById(ligne.platId);
       if (!plat) {
         res.status(404).json({
           succes: false,
-          message: `Plat avec l'ID ${article.platId} non trouvé.`,
+          message: `Plat avec l'ID ${ligne.platId} non trouvé.`,
         } as ReponseApi);
         return;
       }
@@ -43,16 +43,16 @@ export const creerCommande = async (req: Request, res: Response): Promise<void> 
         return;
       }
 
-      const sousTotal = plat.prix * (article.quantite || 1);
+      const sousTotal = plat.prix * (ligne.quantite || 1);
       total += sousTotal;
 
-      articlesCommande.push({
+      lignesCommande.push({
         platId: plat._id as any,
         nom: plat.nom,
         prix: plat.prix,
-        quantite: article.quantite || 1,
-        statut: StatutArticle.EN_ATTENTE,
-        notes: article.notes || undefined,
+        quantite: ligne.quantite || 1,
+        statut: StatutLigneCommande.EN_ATTENTE,
+        notes: ligne.notes || undefined,
       });
     }
 
@@ -61,7 +61,7 @@ export const creerCommande = async (req: Request, res: Response): Promise<void> 
       numeroTable,
       serveurId: req.utilisateur!.id,
       serveurNom: req.utilisateur!.email,
-      articles: articlesCommande,
+      lignes: lignesCommande,
       statut: StatutCommande.EN_ATTENTE,
       total,
     });
@@ -72,9 +72,9 @@ export const creerCommande = async (req: Request, res: Response): Promise<void> 
       numeroTable: commande.numeroTable,
       serveurId: commande.serveurId,
       serveurNom: commande.serveurNom,
-      articles: articlesCommande.map((article) => ({
-        ...article,
-        platId: article.platId.toString(),
+      lignes: lignesCommande.map((ligne) => ({
+        ...ligne,
+        platId: ligne.platId.toString(),
       })),
       total: commande.total,
       creeA: commande.createdAt.toISOString(),
@@ -148,11 +148,11 @@ export const obtenirAddition = async (req: Request, res: Response): Promise<void
       numeroTable: commande.numeroTable,
       serveur: commande.serveurNom,
       date: commande.createdAt,
-      articles: commande.articles.map((article) => ({
-        nom: article.nom,
-        quantite: article.quantite,
-        prixUnitaire: article.prix,
-        sousTotal: article.prix * article.quantite,
+      lignes: commande.lignes.map((ligne) => ({
+        nom: ligne.nom,
+        quantite: ligne.quantite,
+        prixUnitaire: ligne.prix,
+        sousTotal: ligne.prix * ligne.quantite,
       })),
       total: commande.total,
       statut: commande.statut,

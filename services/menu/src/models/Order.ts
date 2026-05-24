@@ -1,12 +1,12 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { StatutCommande, StatutArticle } from 'shared-types';
+import { StatutCommande, StatutLigneCommande } from 'shared-types';
 
-export interface IArticleCommandeDoc {
+export interface ILigneCommandeDoc {
   platId: mongoose.Types.ObjectId;
   nom: string;
   prix: number;
   quantite: number;
-  statut: StatutArticle;
+  statut: StatutLigneCommande;
   notes?: string;
 }
 
@@ -14,14 +14,14 @@ export interface ICommandeDocument extends Document {
   numeroTable: number;
   serveurId: string;
   serveurNom: string;
-  articles: mongoose.Types.DocumentArray<IArticleCommandeDoc & mongoose.Document>;
+  lignes: mongoose.Types.DocumentArray<ILigneCommandeDoc & mongoose.Document>;
   statut: StatutCommande;
   total: number;
   createdAt: Date;
   updatedAt: Date;
 }
 
-const schemaArticleCommande = new Schema<IArticleCommandeDoc>(
+const schemaLigneCommande = new Schema<ILigneCommandeDoc>(
   {
     platId: {
       type: Schema.Types.ObjectId,
@@ -43,8 +43,8 @@ const schemaArticleCommande = new Schema<IArticleCommandeDoc>(
     },
     statut: {
       type: String,
-      enum: Object.values(StatutArticle),
-      default: StatutArticle.EN_ATTENTE,
+      enum: Object.values(StatutLigneCommande),
+      default: StatutLigneCommande.EN_ATTENTE,
     },
     notes: {
       type: String,
@@ -68,11 +68,11 @@ const schemaCommande = new Schema<ICommandeDocument>(
       type: String,
       required: true,
     },
-    articles: {
-      type: [schemaArticleCommande],
+    lignes: {
+      type: [schemaLigneCommande],
       required: true,
       validate: {
-        validator: (v: IArticleCommandeDoc[]) => v.length > 0,
+        validator: (v: ILigneCommandeDoc[]) => v.length > 0,
         message: 'La commande doit contenir au moins un plat.',
       },
     },

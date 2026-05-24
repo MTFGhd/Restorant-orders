@@ -1,6 +1,6 @@
 import amqplib, { ConsumeMessage } from 'amqplib';
 import CommandeCuisine from '../models/CuisineOrder';
-import { MessageCommande, StatutArticle, StatutCommande } from 'shared-types';
+import { MessageCommande, StatutLigneCommande, StatutCommande } from 'shared-types';
 
 let connexion: Awaited<ReturnType<typeof amqplib.connect>> | null = null;
 let canal: Awaited<ReturnType<Awaited<ReturnType<typeof amqplib.connect>>['createChannel']>> | null = null;
@@ -23,13 +23,13 @@ const traiterMessageCommande = async (msg: ConsumeMessage | null): Promise<void>
       numeroTable: donneesCommande.numeroTable,
       serveurId: donneesCommande.serveurId,
       serveurNom: donneesCommande.serveurNom,
-      articles: donneesCommande.articles.map((article) => ({
-        platId: article.platId,
-        nom: article.nom,
-        prix: article.prix,
-        quantite: article.quantite,
-        statut: StatutArticle.EN_ATTENTE,
-        notes: article.notes,
+      lignes: donneesCommande.lignes.map((ligne) => ({
+        platId: ligne.platId,
+        nom: ligne.nom,
+        prix: ligne.prix,
+        quantite: ligne.quantite,
+        statut: StatutLigneCommande.EN_ATTENTE,
+        notes: ligne.notes,
       })),
       statut: StatutCommande.EN_ATTENTE,
       total: donneesCommande.total,

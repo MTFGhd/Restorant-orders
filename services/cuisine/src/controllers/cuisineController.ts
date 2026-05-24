@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import CommandeCuisine from '../models/CuisineOrder';
-import { ReponseApi, StatutCommande, StatutArticle } from 'shared-types';
+import { ReponseApi, StatutCommande, StatutLigneCommande } from 'shared-types';
 
 export const obtenirCommandes = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -24,25 +24,37 @@ export const obtenirCommandeParId = async (req: Request, res: Response): Promise
   }
 };
 
-export const mettreAJourStatutArticle = async (req: Request, res: Response): Promise<void> => {
+export const mettreAJourStatutLigne = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id, articleId } = req.params;
+    const { id, ligneId } = req.params;
     const { statut } = req.body;
-    if (!statut || !Object.values(StatutArticle).includes(statut)) {
-      res.status(400).json({ succes: false, message: `Statut invalide. Valeurs: ${Object.values(StatutArticle).join(', ')}` } as ReponseApi);
+    if (!statut || !Object.values(StatutLigneCommande).includes(statut)) {
+      res.status(400).json({
+        succes: false,
+        message: `Statut invalide. Valeurs: ${Object.values(StatutLigneCommande).join(', ')}`,
+      } as ReponseApi);
       return;
     }
     const commande = await CommandeCuisine.findById(id);
     if (!commande) { res.status(404).json({ succes: false, message: 'Commande non trouvée.' } as ReponseApi); return; }
-    const article = commande.articles.find((a: any) => a._id.toString() === articleId);
-    if (!article) { res.status(404).json({ succes: false, message: 'Plat non trouvé dans la commande.' } as ReponseApi); return; }
-    article.statut = statut;
-    const toutPret = commande.articles.every((a) => a.statut === StatutArticle.PRET);
-    const certainsEnPrep = commande.articles.some((a) => a.statut === StatutArticle.EN_PREPARATION || a.statut === StatutArticle.PRET);
+    const ligne = commande.lignes.find((a: any) => a._id.toString() === ligneId);
+    if (!ligne) {
+      res.status(404).json({ succes: false, message: 'Ligne de commande non trouvée.' } as ReponseApi);
+      return;
+    }
+    ligne.statut = statut;
+    const toutPret = commande.lignes.every((a) => a.statut === StatutLigneCommande.PRET);
+    const certainsEnPrep = commande.lignes.some(
+      (a) => a.statut === StatutLigneCommande.EN_PREPARATION || a.statut === StatutLigneCommande.PRET
+    );
     if (toutPret) commande.statut = StatutCommande.PRET;
     else if (certainsEnPrep) commande.statut = StatutCommande.EN_PREPARATION;
     await commande.save();
-    res.json({ succes: true, message: `Statut du plat "${article.nom}" mis à jour: ${statut}`, donnees: commande } as ReponseApi);
+    res.json({
+      succes: true,
+      message: `Statut du plat "${ligne.nom}" mis à jour: ${statut}`,
+      donnees: commande,
+    } as ReponseApi);
   } catch (erreur: any) {
     res.status(500).json({ succes: false, message: erreur.message } as ReponseApi);
   }
