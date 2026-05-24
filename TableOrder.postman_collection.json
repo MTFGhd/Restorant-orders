@@ -5,9 +5,27 @@
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_postman_id": "c1234567-89ab-cdef-0123-456789abcdef"
   },
+  "variable": [
+    {
+      "key": "auth_port",
+      "value": "8000"
+    },
+    {
+      "key": "menu_port",
+      "value": "8000"
+    },
+    {
+      "key": "commandes_port",
+      "value": "8000"
+    },
+    {
+      "key": "cuisine_port",
+      "value": "8000"
+    }
+  ],
   "item": [
     {
-      "name": "Auth Service (Port 3001)",
+      "name": "Auth Service",
       "item": [
         {
           "name": "Inscription (Serveur)",
@@ -23,12 +41,12 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3001/api/auth/inscription",
+              "raw": "http://localhost:{{auth_port}}/api/auth/inscription",
               "protocol": "http",
               "host": [
                 "localhost"
               ],
-              "port": "3001",
+              "port": "{{auth_port}}",
               "path": [
                 "api",
                 "auth",
@@ -51,12 +69,12 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3001/api/auth/inscription",
+              "raw": "http://localhost:{{auth_port}}/api/auth/inscription",
               "protocol": "http",
               "host": [
                 "localhost"
               ],
-              "port": "3001",
+              "port": "{{auth_port}}",
               "path": [
                 "api",
                 "auth",
@@ -79,12 +97,12 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3001/api/auth/inscription",
+              "raw": "http://localhost:{{auth_port}}/api/auth/inscription",
               "protocol": "http",
               "host": [
                 "localhost"
               ],
-              "port": "3001",
+              "port": "{{auth_port}}",
               "path": [
                 "api",
                 "auth",
@@ -121,12 +139,12 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3001/api/auth/connexion",
+              "raw": "http://localhost:{{auth_port}}/api/auth/connexion",
               "protocol": "http",
               "host": [
                 "localhost"
               ],
-              "port": "3001",
+              "port": "{{auth_port}}",
               "path": [
                 "api",
                 "auth",
@@ -140,12 +158,12 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "http://localhost:3001/api/auth/profil",
+              "raw": "http://localhost:{{auth_port}}/api/auth/profil",
               "protocol": "http",
               "host": [
                 "localhost"
               ],
-              "port": "3001",
+              "port": "{{auth_port}}",
               "path": [
                 "api",
                 "auth",
@@ -157,7 +175,7 @@
       ]
     },
     {
-      "name": "Menu Service (Port 3002)",
+      "name": "Menu Service",
       "item": [
         {
           "name": "Catégories",
@@ -167,12 +185,12 @@
               "request": {
                 "method": "GET",
                 "url": {
-                  "raw": "http://localhost:3002/api/categories",
+                  "raw": "http://localhost:{{menu_port}}/api/categories",
                   "protocol": "http",
                   "host": [
                     "localhost"
                   ],
-                  "port": "3002",
+                  "port": "{{menu_port}}",
                   "path": [
                     "api",
                     "categories"
@@ -194,12 +212,12 @@
                   }
                 },
                 "url": {
-                  "raw": "http://localhost:3002/api/categories",
+                  "raw": "http://localhost:{{menu_port}}/api/categories",
                   "protocol": "http",
                   "host": [
                     "localhost"
                   ],
-                  "port": "3002",
+                  "port": "{{menu_port}}",
                   "path": [
                     "api",
                     "categories"
@@ -221,12 +239,12 @@
                   }
                 },
                 "url": {
-                  "raw": "http://localhost:3002/api/categories/:id",
+                  "raw": "http://localhost:{{menu_port}}/api/categories/:id",
                   "protocol": "http",
                   "host": [
                     "localhost"
                   ],
-                  "port": "3002",
+                  "port": "{{menu_port}}",
                   "path": [
                     "api",
                     "categories",
@@ -246,12 +264,12 @@
               "request": {
                 "method": "DELETE",
                 "url": {
-                  "raw": "http://localhost:3002/api/categories/:id",
+                  "raw": "http://localhost:{{menu_port}}/api/categories/:id",
                   "protocol": "http",
                   "host": [
                     "localhost"
                   ],
-                  "port": "3002",
+                  "port": "{{menu_port}}",
                   "path": [
                     "api",
                     "categories",
@@ -276,12 +294,12 @@
               "request": {
                 "method": "GET",
                 "url": {
-                  "raw": "http://localhost:3002/api/menu",
+                  "raw": "http://localhost:{{menu_port}}/api/menu",
                   "protocol": "http",
                   "host": [
                     "localhost"
                   ],
-                  "port": "3002",
+                  "port": "{{menu_port}}",
                   "path": [
                     "api",
                     "menu"
@@ -303,12 +321,12 @@
                   }
                 },
                 "url": {
-                  "raw": "http://localhost:3002/api/menu",
+                  "raw": "http://localhost:{{menu_port}}/api/menu",
                   "protocol": "http",
                   "host": [
                     "localhost"
                   ],
-                  "port": "3002",
+                  "port": "{{menu_port}}",
                   "path": [
                     "api",
                     "menu"
@@ -330,12 +348,12 @@
                   }
                 },
                 "url": {
-                  "raw": "http://localhost:3002/api/menu/:id",
+                  "raw": "http://localhost:{{menu_port}}/api/menu/:id",
                   "protocol": "http",
                   "host": [
                     "localhost"
                   ],
-                  "port": "3002",
+                  "port": "{{menu_port}}",
                   "path": [
                     "api",
                     "menu",
@@ -355,12 +373,12 @@
               "request": {
                 "method": "DELETE",
                 "url": {
-                  "raw": "http://localhost:3002/api/menu/:id",
+                  "raw": "http://localhost:{{menu_port}}/api/menu/:id",
                   "protocol": "http",
                   "host": [
                     "localhost"
                   ],
-                  "port": "3002",
+                  "port": "{{menu_port}}",
                   "path": [
                     "api",
                     "menu",
@@ -394,12 +412,12 @@
                   }
                 },
                 "url": {
-                  "raw": "http://localhost:3002/api/commandes",
+                  "raw": "http://localhost:{{commandes_port}}/api/commandes",
                   "protocol": "http",
                   "host": [
                     "localhost"
                   ],
-                  "port": "3002",
+                  "port": "{{commandes_port}}",
                   "path": [
                     "api",
                     "commandes"
@@ -412,12 +430,12 @@
               "request": {
                 "method": "GET",
                 "url": {
-                  "raw": "http://localhost:3002/api/commandes",
+                  "raw": "http://localhost:{{commandes_port}}/api/commandes",
                   "protocol": "http",
                   "host": [
                     "localhost"
                   ],
-                  "port": "3002",
+                  "port": "{{commandes_port}}",
                   "path": [
                     "api",
                     "commandes"
@@ -430,12 +448,12 @@
               "request": {
                 "method": "GET",
                 "url": {
-                  "raw": "http://localhost:3002/api/commandes/:id/addition",
+                  "raw": "http://localhost:{{commandes_port}}/api/commandes/:id/addition",
                   "protocol": "http",
                   "host": [
                     "localhost"
                   ],
-                  "port": "3002",
+                  "port": "{{commandes_port}}",
                   "path": [
                     "api",
                     "commandes",
@@ -465,12 +483,12 @@
                   }
                 },
                 "url": {
-                  "raw": "http://localhost:3002/api/commandes/:id/statut",
+                  "raw": "http://localhost:{{commandes_port}}/api/commandes/:id/statut",
                   "protocol": "http",
                   "host": [
                     "localhost"
                   ],
-                  "port": "3002",
+                  "port": "{{commandes_port}}",
                   "path": [
                     "api",
                     "commandes",
@@ -491,19 +509,19 @@
       ]
     },
     {
-      "name": "Cuisine Service (Port 3003)",
+      "name": "Cuisine Service",
       "item": [
         {
           "name": "Lister les commandes (Cuisine)",
           "request": {
             "method": "GET",
             "url": {
-              "raw": "http://localhost:3003/api/cuisine/commandes",
+              "raw": "http://localhost:{{cuisine_port}}/api/cuisine/commandes",
               "protocol": "http",
               "host": [
                 "localhost"
               ],
-              "port": "3003",
+              "port": "{{cuisine_port}}",
               "path": [
                 "api",
                 "cuisine",
@@ -517,12 +535,12 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "http://localhost:3003/api/cuisine/statistiques",
+              "raw": "http://localhost:{{cuisine_port}}/api/cuisine/statistiques",
               "protocol": "http",
               "host": [
                 "localhost"
               ],
-              "port": "3003",
+              "port": "{{cuisine_port}}",
               "path": [
                 "api",
                 "cuisine",
@@ -545,12 +563,12 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3003/api/cuisine/commandes/:id/lignes/:ligneId",
+              "raw": "http://localhost:{{cuisine_port}}/api/cuisine/commandes/:id/lignes/:ligneId",
               "protocol": "http",
               "host": [
                 "localhost"
               ],
-              "port": "3003",
+              "port": "{{cuisine_port}}",
               "path": [
                 "api",
                 "cuisine",
@@ -586,12 +604,12 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3003/api/cuisine/commandes/:id/statut",
+              "raw": "http://localhost:{{cuisine_port}}/api/cuisine/commandes/:id/statut",
               "protocol": "http",
               "host": [
                 "localhost"
               ],
-              "port": "3003",
+              "port": "{{cuisine_port}}",
               "path": [
                 "api",
                 "cuisine",
