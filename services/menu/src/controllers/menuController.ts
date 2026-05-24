@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Plat from '../models/Dish';
+import Plat from '../models/Plat';
 import { ReponseApi } from 'shared-types';
 
 /**

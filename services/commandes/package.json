@@ -1,7 +1,7 @@
 {
-  "name": "cuisine-service",
+  "name": "commandes-service",
   "version": "1.0.0",
-  "description": "Service Cuisine - Restaurant TableOrder",
+  "description": "Service Commandes - Restaurant TableOrder",
   "main": "src/index.ts",
   "scripts": {
     "dev": "npx tsx watch src/index.ts",
@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.7.7",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",

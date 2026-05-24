@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 import { StatutCommande, StatutLigneCommande } from 'shared-types';
 
 export interface ILigneCommandeDoc {
-  platId: mongoose.Types.ObjectId;
+  platId: string;
   nom: string;
   prix: number;
   quantite: number;
@@ -24,8 +24,7 @@ export interface ICommandeDocument extends Document {
 const schemaLigneCommande = new Schema<ILigneCommandeDoc>(
   {
     platId: {
-      type: Schema.Types.ObjectId,
-      ref: 'Plat',
+      type: String,
       required: true,
     },
     nom: {
@@ -57,7 +56,7 @@ const schemaCommande = new Schema<ICommandeDocument>(
   {
     numeroTable: {
       type: Number,
-      required: [true, 'Le numéro de table est requis'],
+      required: [true, 'Le numero de table est requis'],
       min: 1,
     },
     serveurId: {

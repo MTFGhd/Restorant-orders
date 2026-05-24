@@ -2,7 +2,6 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copier d'abord les fichiers shared-types dans la même structure que le repo
 COPY packages/shared-types ./packages/shared-types
 COPY packages/rabbitmq-client ./packages/rabbitmq-client
 WORKDIR /app/packages/shared-types
@@ -10,14 +9,13 @@ RUN npm install && npm run build
 WORKDIR /app/packages/rabbitmq-client
 RUN npm install && npm run build
 
-# Revenir au dossier du service
-WORKDIR /app/services/cuisine
+WORKDIR /app/services/commandes
 
-COPY services/cuisine/package*.json ./
+COPY services/commandes/package*.json ./
 RUN npm install
 
-COPY services/cuisine/ ./
+COPY services/commandes/ ./
 
-EXPOSE 3003
+EXPOSE 3004
 
 CMD ["npx", "tsx", "src/index.ts"]

@@ -42,10 +42,12 @@ services:
       CORS_ORIGINS: http://localhost
       AUTH_SERVICE_URL: http://auth-service:3001
       MENU_SERVICE_URL: http://menu-service:3002
+      COMMAND_SERVICE_URL: http://commandes-service:3004
       CUISINE_SERVICE_URL: http://cuisine-service:3003
     depends_on:
       - auth-service
       - menu-service
+      - commandes-service
       - cuisine-service
     networks:
       - restaurant-network
@@ -76,10 +78,27 @@ services:
       PORT: 3002
       MONGO_URI: mongodb://mongo:27017/menu_db
       JWT_SECRET: restaurant_super_secret_jwt_key_2024
+    depends_on:
+      - mongo
+    networks:
+      - restaurant-network
+    restart: unless-stopped
+
+  commandes-service:
+    build:
+      context: .
+      dockerfile: services/commandes/Dockerfile
+    container_name: commandes-service
+    environment:
+      PORT: 3004
+      MONGO_URI: mongodb://mongo:27017/commandes_db
+      JWT_SECRET: restaurant_super_secret_jwt_key_2024
       RABBITMQ_URL: amqp://rabbitmq:5672
+      MENU_SERVICE_URL: http://menu-service:3002
     depends_on:
       - mongo
       - rabbitmq
+      - menu-service
     networks:
       - restaurant-network
     restart: unless-stopped

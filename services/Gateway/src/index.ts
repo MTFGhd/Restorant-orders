@@ -73,6 +73,8 @@ app.get('/health', (_req, res) => {
 
 const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL ?? 'http://auth-service:3001';
 const MENU_SERVICE_URL = process.env.MENU_SERVICE_URL ?? 'http://menu-service:3002';
+const COMMAND_SERVICE_URL =
+  process.env.COMMAND_SERVICE_URL ?? 'http://commandes-service:3004';
 const CUISINE_SERVICE_URL = process.env.CUISINE_SERVICE_URL ?? 'http://cuisine-service:3003';
 
 const createProxy = (target: string) =>
@@ -85,7 +87,7 @@ const createProxy = (target: string) =>
 app.use('/api/auth', createProxy(AUTH_SERVICE_URL));
 app.use('/api/menu', createProxy(MENU_SERVICE_URL));
 app.use('/api/categories', createProxy(MENU_SERVICE_URL));
-app.use('/api/commandes', createProxy(MENU_SERVICE_URL));
+app.use('/api/commandes', createProxy(COMMAND_SERVICE_URL));
 app.use('/api/cuisine', createProxy(CUISINE_SERVICE_URL));
 
 app.listen(PORT, () => {

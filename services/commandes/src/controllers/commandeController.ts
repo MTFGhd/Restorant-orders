@@ -1,14 +1,43 @@
+import axios from 'axios';
 import { Request, Response } from 'express';
 import Commande from '../models/Order';
-import Plat from '../models/Dish';
 import { publierDansFile } from '../config/rabbitmq';
-import { ReponseApi, MessageCommande, StatutCommande, StatutLigneCommande } from 'shared-types';
+import {
+  IPlat,
+  MessageCommande,
+  ReponseApi,
+  StatutCommande,
+  StatutLigneCommande,
+} from 'shared-types';
 
-/**
- * POST /api/commandes
- * Créer une commande pour une table (serveur/gérant)
- * Corps: { numeroTable, lignes: [{ platId, quantite, notes? }] }
- */
+const MENU_SERVICE_URL = process.env.MENU_SERVICE_URL || 'http://menu-service:3002';
+
+type MenuResponse = ReponseApi<IPlat>;
+
+type ErreurAvecStatut = Error & { statusCode?: number };
+
+const chargerPlat = async (platId: string): Promise<IPlat> => {
+  const url = `${MENU_SERVICE_URL}/api/menu/${platId}`;
+
+  try {
+    const response = await axios.get<MenuResponse>(url, { timeout: 5000 });
+    if (!response.data?.succes || !response.data.donnees) {
+      throw new Error('Plat non trouve.');
+    }
+    return response.data.donnees;
+  } catch (erreur) {
+    if (axios.isAxiosError(erreur)) {
+      const message =
+        (erreur.response?.data as ReponseApi | undefined)?.message ||
+        'Erreur lors de la recuperation du plat.';
+      const err = new Error(message) as ErreurAvecStatut;
+      err.statusCode = erreur.response?.status || 502;
+      throw err;
+    }
+    throw erreur;
+  }
+};
+
 export const creerCommande = async (req: Request, res: Response): Promise<void> => {
   try {
     const { numeroTable, lignes } = req.body;
@@ -16,21 +45,23 @@ export const creerCommande = async (req: Request, res: Response): Promise<void> 
     if (!numeroTable || !lignes || !Array.isArray(lignes) || lignes.length === 0) {
       res.status(400).json({
         succes: false,
-        message: 'Numéro de table et au moins un plat sont requis.',
+        message: 'Numero de table et au moins un plat sont requis.',
       } as ReponseApi);
       return;
     }
 
-    // Récupérer les détails des plats et vérifier la disponibilité
     const lignesCommande = [];
     let total = 0;
 
     for (const ligne of lignes) {
-      const plat = await Plat.findById(ligne.platId);
-      if (!plat) {
-        res.status(404).json({
+      let plat: IPlat;
+      try {
+        plat = await chargerPlat(ligne.platId);
+      } catch (erreur) {
+        const err = erreur as ErreurAvecStatut;
+        res.status(err.statusCode || 500).json({
           succes: false,
-          message: `Plat avec l'ID ${ligne.platId} non trouvé.`,
+          message: err.message || 'Erreur lors de la validation du plat.',
         } as ReponseApi);
         return;
       }
@@ -43,20 +74,20 @@ export const creerCommande = async (req: Request, res: Response): Promise<void> 
         return;
       }
 
-      const sousTotal = plat.prix * (ligne.quantite || 1);
+      const quantite = ligne.quantite || 1;
+      const sousTotal = plat.prix * quantite;
       total += sousTotal;
 
       lignesCommande.push({
-        platId: plat._id as any,
+        platId: plat._id as string,
         nom: plat.nom,
         prix: plat.prix,
-        quantite: ligne.quantite || 1,
+        quantite,
         statut: StatutLigneCommande.EN_ATTENTE,
         notes: ligne.notes || undefined,
       });
     }
 
-    // Créer la commande
     const commande = await Commande.create({
       numeroTable,
       serveurId: req.utilisateur!.id,
@@ -66,7 +97,6 @@ export const creerCommande = async (req: Request, res: Response): Promise<void> 
       total,
     });
 
-    // Publier la commande dans RabbitMQ pour la cuisine
     const messageCommande: MessageCommande = {
       idCommande: commande._id.toString(),
       numeroTable: commande.numeroTable,
@@ -84,7 +114,7 @@ export const creerCommande = async (req: Request, res: Response): Promise<void> 
 
     res.status(201).json({
       succes: true,
-      message: 'Commande créée et transmise à la cuisine.',
+      message: 'Commande creee et transmise a la cuisine.',
       donnees: commande,
     } as ReponseApi);
   } catch (erreur: any) {
@@ -92,10 +122,6 @@ export const creerCommande = async (req: Request, res: Response): Promise<void> 
   }
 };
 
-/**
- * GET /api/commandes
- * Lister les commandes (avec filtre optionnel par statut et table)
- */
 export const obtenirCommandes = async (req: Request, res: Response): Promise<void> => {
   try {
     const filtre: Record<string, any> = {};
@@ -114,15 +140,11 @@ export const obtenirCommandes = async (req: Request, res: Response): Promise<voi
   }
 };
 
-/**
- * GET /api/commandes/:id
- * Obtenir une commande par ID
- */
 export const obtenirCommandeParId = async (req: Request, res: Response): Promise<void> => {
   try {
     const commande = await Commande.findById(req.params.id);
     if (!commande) {
-      res.status(404).json({ succes: false, message: 'Commande non trouvée.' } as ReponseApi);
+      res.status(404).json({ succes: false, message: 'Commande non trouvee.' } as ReponseApi);
       return;
     }
     res.json({ succes: true, donnees: commande } as ReponseApi);
@@ -131,15 +153,11 @@ export const obtenirCommandeParId = async (req: Request, res: Response): Promise
   }
 };
 
-/**
- * GET /api/commandes/:id/addition
- * Générer l'addition d'une commande
- */
 export const obtenirAddition = async (req: Request, res: Response): Promise<void> => {
   try {
     const commande = await Commande.findById(req.params.id);
     if (!commande) {
-      res.status(404).json({ succes: false, message: 'Commande non trouvée.' } as ReponseApi);
+      res.status(404).json({ succes: false, message: 'Commande non trouvee.' } as ReponseApi);
       return;
     }
 
@@ -164,10 +182,6 @@ export const obtenirAddition = async (req: Request, res: Response): Promise<void
   }
 };
 
-/**
- * PATCH /api/commandes/:id/statut
- * Mettre à jour le statut d'une commande
- */
 export const mettreAJourStatutCommande = async (req: Request, res: Response): Promise<void> => {
   try {
     const { statut } = req.body;
@@ -175,7 +189,7 @@ export const mettreAJourStatutCommande = async (req: Request, res: Response): Pr
     if (!statut || !Object.values(StatutCommande).includes(statut)) {
       res.status(400).json({
         succes: false,
-        message: `Statut invalide. Valeurs autorisées: ${Object.values(StatutCommande).join(', ')}`,
+        message: `Statut invalide. Valeurs autorisees: ${Object.values(StatutCommande).join(', ')}`,
       } as ReponseApi);
       return;
     }
@@ -187,13 +201,13 @@ export const mettreAJourStatutCommande = async (req: Request, res: Response): Pr
     );
 
     if (!commande) {
-      res.status(404).json({ succes: false, message: 'Commande non trouvée.' } as ReponseApi);
+      res.status(404).json({ succes: false, message: 'Commande non trouvee.' } as ReponseApi);
       return;
     }
 
     res.json({
       succes: true,
-      message: 'Statut de la commande mis à jour.',
+      message: 'Statut de la commande mis a jour.',
       donnees: commande,
     } as ReponseApi);
   } catch (erreur: any) {
