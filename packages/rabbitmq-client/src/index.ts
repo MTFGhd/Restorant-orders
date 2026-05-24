@@ -1,4 +1,8 @@
-import amqplib, { Channel, Connection, ConsumeMessage } from 'amqplib';
+import amqplib from 'amqplib';
+import type { ConsumeMessage } from 'amqplib';
+
+type AmqpConnection = Awaited<ReturnType<typeof amqplib.connect>>;
+type AmqpChannel = Awaited<ReturnType<AmqpConnection['createChannel']>>;
 
 export interface RabbitMQBaseOptions {
   url?: string;
@@ -31,7 +35,7 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const connectWithRetry = async (
   options: RabbitMQBaseOptions
-): Promise<{ connection: Connection; channel: Channel }> => {
+): Promise<{ connection: AmqpConnection; channel: AmqpChannel }> => {
   const url = options.url || 'amqp://rabbitmq:5672';
   const maxRetries = options.maxRetries ?? 10;
   const retryDelayMs = options.retryDelayMs ?? 5000;

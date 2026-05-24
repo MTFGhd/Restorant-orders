@@ -81,14 +81,15 @@ const createProxy = (target: string) =>
   createProxyMiddleware({
     target,
     changeOrigin: true,
-    xfwd: true
+    xfwd: true,
   });
 
-app.use('/api/auth', createProxy(AUTH_SERVICE_URL));
-app.use('/api/menu', createProxy(MENU_SERVICE_URL));
-app.use('/api/categories', createProxy(MENU_SERVICE_URL));
-app.use('/api/commandes', createProxy(COMMAND_SERVICE_URL));
-app.use('/api/cuisine', createProxy(CUISINE_SERVICE_URL));
+// Ensure proxied requests include the full /api/* prefix expected by each service.
+app.use('/api/auth', createProxy(AUTH_SERVICE_URL + '/api/auth'));
+app.use('/api/menu', createProxy(MENU_SERVICE_URL + '/api/menu'));
+app.use('/api/categories', createProxy(MENU_SERVICE_URL + '/api/categories'));
+app.use('/api/commandes', createProxy(COMMAND_SERVICE_URL + '/api/commandes'));
+app.use('/api/cuisine', createProxy(CUISINE_SERVICE_URL + '/api/cuisine'));
 
 app.listen(PORT, () => {
   console.log(`API Gateway demarree sur le port ${PORT}`);
