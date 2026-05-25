@@ -1,0 +1,15 @@
+import { Router } from 'express';
+import { obtenirCommandes, obtenirCommandeParId, mettreAJourStatutLigne, mettreAJourStatutCommande, obtenirStatistiques } from '../controllers/cuisineController.js';
+import { verifierToken, exigerRole } from '../middleware/auth.js';
+import { UserRole } from 'shared-types';
+
+const routeur = Router();
+routeur.use(verifierToken);
+
+routeur.get('/statistiques', obtenirStatistiques);
+routeur.get('/commandes', obtenirCommandes);
+routeur.get('/commandes/:id', obtenirCommandeParId);
+routeur.patch('/commandes/:id/lignes/:ligneId', exigerRole(UserRole.CUISINIER, UserRole.GERANT), mettreAJourStatutLigne);
+routeur.patch('/commandes/:id/statut', exigerRole(UserRole.CUISINIER, UserRole.GERANT), mettreAJourStatutCommande);
+
+export default routeur;

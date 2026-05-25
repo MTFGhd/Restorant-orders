@@ -1,18 +1,12 @@
 {
   "name": "shared-types",
   "version": "1.0.0",
-  "description": "Shared TypeScript types for restaurant order microservices",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch"
-  },
+  "description": "Shared runtime constants for restaurant order microservices",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "@types/node": "^22.15.0",
-    "typescript": "^5.8.0"
-  }
+  "devDependencies": {}
 }

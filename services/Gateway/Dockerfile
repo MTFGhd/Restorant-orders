@@ -9,4 +9,4 @@ COPY services/Gateway/ ./
 
 EXPOSE 8000
 
-CMD ["npx", "tsx", "src/index.ts"]
+CMD ["node", "src/index.js"]
